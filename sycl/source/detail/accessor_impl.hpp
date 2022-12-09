@@ -33,6 +33,7 @@ class AccessorPrivateProxy;
 } // namespace intel
 } // namespace ext
 
+// dummy
 namespace detail {
 
 class SYCLMemObjI;
