@@ -308,6 +308,7 @@ add_custom_target(sycl-compiler
           llvm-link
           llvm-objcopy
           spirv-to-ir-wrapper
+          sycl-aspect-filter
           sycl-post-link
           opencl-aot
 )
@@ -396,6 +397,7 @@ set( SYCL_TOOLCHAIN_DEPLOY_COMPONENTS
      llvm-link
      llvm-objcopy
      spirv-to-ir-wrapper
+     sycl-aspect-filter
      sycl-post-link
      sycl-ls
      clang-resource-headers
