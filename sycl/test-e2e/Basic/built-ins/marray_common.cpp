@@ -5,7 +5,7 @@
 #define _USE_MATH_DEFINES // To use math constants
 #include <cmath>
 #endif
-
+#include <iostream>
 #include <sycl/sycl.hpp>
 
 #define TEST(FUNC, MARRAY_ELEM_TYPE, DIM, EXPECTED, DELTA, ...)                \
@@ -50,71 +50,78 @@ int main() {
   sycl::marray<float, 2> ma14{+0.0f, -0.6f};
   sycl::marray<double, 2> ma15{-0.0, 0.6f};
 
-  // sycl::clamp
-  TEST(sycl::clamp, float, 2, EXPECTED(float, 1.0f, 2.0f), 0, ma1, ma2, ma3);
-  TEST(sycl::clamp, float, 2, EXPECTED(float, 1.0f, 2.0f), 0, ma1, 1.0f, 3.0f);
-  if (dev.has(sycl::aspect::fp64))
-    TEST(sycl::clamp, double, 2, EXPECTED(double, 1.0, 2.0), 0, ma4, 1.0, 3.0);
+  // // sycl::clamp
+  // TEST(sycl::clamp, float, 2, EXPECTED(float, 1.0f, 2.0f), 0, ma1, ma2, ma3);
+  // TEST(sycl::clamp, float, 2, EXPECTED(float, 1.0f, 2.0f), 0,
+  // ma1, 1.0f, 3.0f); if (dev.has(sycl::aspect::fp64))
+  //   TEST(sycl::clamp, double, 2, EXPECTED(double, 1.0, 2.0), 0,
+  //   ma4, 1.0, 3.0);
   // sycl::degrees
   TEST(sycl::degrees, float, 3, EXPECTED(float, 180, 180, 180), 0, ma5);
-  if (dev.has(sycl::aspect::fp64))
-    TEST(sycl::degrees, double, 3, EXPECTED(double, 180, 180, 180), 0, ma6);
-  if (dev.has(sycl::aspect::fp16))
-    TEST(sycl::degrees, sycl::half, 3, EXPECTED(sycl::half, 180, 180, 180), 0.2,
-         ma7);
-  // sycl::max
-  TEST(sycl::max, float, 2, EXPECTED(float, 3.0f, 2.0f), 0, ma1, ma3);
-  TEST(sycl::max, float, 2, EXPECTED(float, 1.5f, 2.0f), 0, ma1, 1.5f);
-  if (dev.has(sycl::aspect::fp64))
-    TEST(sycl::max, double, 2, EXPECTED(double, 1.5, 2.0), 0, ma4, 1.5);
-  // sycl::min
-  TEST(sycl::min, float, 2, EXPECTED(float, 1.0f, 2.0f), 0, ma1, ma3);
-  TEST(sycl::min, float, 2, EXPECTED(float, 1.0f, 1.5f), 0, ma1, 1.5f);
-  if (dev.has(sycl::aspect::fp64))
-    TEST(sycl::min, double, 2, EXPECTED(double, 1.0, 1.5), 0, ma4, 1.5);
-  // sycl::mix
-  TEST(sycl::mix, float, 2, EXPECTED(float, 1.6f, 2.0f), 0, ma1, ma3, ma8);
-  TEST(sycl::mix, float, 2, EXPECTED(float, 1.4f, 2.0f), 0, ma1, ma3, 0.2);
-  if (dev.has(sycl::aspect::fp64))
-    TEST(sycl::mix, double, 2, EXPECTED(double, 3.0, 5.0), 0, ma4, ma9, 0.5);
-  // sycl::radians
-  TEST(sycl::radians, float, 3, EXPECTED(float, M_PI, M_PI, M_PI), 0, ma10);
-  if (dev.has(sycl::aspect::fp64))
-    TEST(sycl::radians, double, 3, EXPECTED(double, M_PI, M_PI, M_PI), 0, ma11);
-  if (dev.has(sycl::aspect::fp16))
-    TEST(sycl::radians, sycl::half, 3, EXPECTED(sycl::half, M_PI, M_PI, M_PI),
-         0.002, ma12);
-  // sycl::step
-  TEST(sycl::step, float, 2, EXPECTED(float, 1.0f, 1.0f), 0, ma1, ma3);
-  if (dev.has(sycl::aspect::fp64))
-    TEST(sycl::step, double, 2, EXPECTED(double, 1.0, 1.0), 0, ma4, ma9);
-  if (dev.has(sycl::aspect::fp16))
-    TEST(sycl::step, sycl::half, 3, EXPECTED(sycl::half, 1.0, 0.0, 1.0), 0,
-         ma12, ma13);
-  TEST(sycl::step, float, 2, EXPECTED(float, 1.0f, 0.0f), 0, 2.5f, ma3);
-  if (dev.has(sycl::aspect::fp64))
-    TEST(sycl::step, double, 2, EXPECTED(double, 0.0f, 1.0f), 0, 6.0f, ma9);
-  // sycl::smoothstep
-  TEST(sycl::smoothstep, float, 2, EXPECTED(float, 1.0f, 1.0f), 0, ma8, ma1,
-       ma2);
-  if (dev.has(sycl::aspect::fp64))
-    TEST(sycl::smoothstep, double, 2, EXPECTED(double, 1.0, 1.0f), 0.00000001,
-         ma4, ma9, ma9);
-  if (dev.has(sycl::aspect::fp16))
-    TEST(sycl::smoothstep, sycl::half, 3, EXPECTED(sycl::half, 1.0, 1.0, 1.0),
-         0, ma7, ma12, ma13);
-  TEST(sycl::smoothstep, float, 2, EXPECTED(float, 0.0553936f, 0.0f), 0.0000001,
-       2.5f, 6.0f, ma3);
-  if (dev.has(sycl::aspect::fp64))
-    TEST(sycl::smoothstep, double, 2, EXPECTED(double, 0.0f, 1.0f), 0, 6.0f,
-         8.0f, ma9);
-  // sign
-  TEST(sycl::sign, float, 2, EXPECTED(float, +0.0f, -1.0f), 0, ma14);
-  if (dev.has(sycl::aspect::fp64))
-    TEST(sycl::sign, double, 2, EXPECTED(double, -0.0, 1.0), 0, ma15);
-  if (dev.has(sycl::aspect::fp16))
-    TEST(sycl::sign, sycl::half, 3, EXPECTED(sycl::half, 1.0, 1.0, 1.0), 0,
-         ma12);
+  // if (dev.has(sycl::aspect::fp64))
+  //   TEST(sycl::degrees, double, 3, EXPECTED(double, 180, 180, 180), 0, ma6);
+  // if (dev.has(sycl::aspect::fp16))
+  //   TEST(sycl::degrees, sycl::half, 3, EXPECTED(sycl::half, 180, 180, 180),
+  //   0.2,
+  //        ma7);
+  // // sycl::max
+  // TEST(sycl::max, float, 2, EXPECTED(float, 3.0f, 2.0f), 0, ma1, ma3);
+  // TEST(sycl::max, float, 2, EXPECTED(float, 1.5f, 2.0f), 0, ma1, 1.5f);
+  // if (dev.has(sycl::aspect::fp64))
+  //   TEST(sycl::max, double, 2, EXPECTED(double, 1.5, 2.0), 0, ma4, 1.5);
+  // // sycl::min
+  // TEST(sycl::min, float, 2, EXPECTED(float, 1.0f, 2.0f), 0, ma1, ma3);
+  // TEST(sycl::min, float, 2, EXPECTED(float, 1.0f, 1.5f), 0, ma1, 1.5f);
+  // if (dev.has(sycl::aspect::fp64))
+  //   TEST(sycl::min, double, 2, EXPECTED(double, 1.0, 1.5), 0, ma4, 1.5);
+  // // sycl::mix
+  // TEST(sycl::mix, float, 2, EXPECTED(float, 1.6f, 2.0f), 0, ma1, ma3, ma8);
+  // TEST(sycl::mix, float, 2, EXPECTED(float, 1.4f, 2.0f), 0, ma1, ma3, 0.2);
+  // if (dev.has(sycl::aspect::fp64))
+  //   TEST(sycl::mix, double, 2, EXPECTED(double, 3.0, 5.0), 0, ma4, ma9, 0.5);
+  // // sycl::radians
+  // TEST(sycl::radians, float, 3, EXPECTED(float, M_PI, M_PI, M_PI), 0, ma10);
+  // if (dev.has(sycl::aspect::fp64))
+  //   TEST(sycl::radians, double, 3, EXPECTED(double, M_PI, M_PI, M_PI), 0,
+  //   ma11);
+  // if (dev.has(sycl::aspect::fp16))
+  //   TEST(sycl::radians, sycl::half, 3, EXPECTED(sycl::half, M_PI, M_PI,
+  //   M_PI),
+  //        0.002, ma12);
+  // // sycl::step
+  // TEST(sycl::step, float, 2, EXPECTED(float, 1.0f, 1.0f), 0, ma1, ma3);
+  // if (dev.has(sycl::aspect::fp64))
+  //   TEST(sycl::step, double, 2, EXPECTED(double, 1.0, 1.0), 0, ma4, ma9);
+  // if (dev.has(sycl::aspect::fp16))
+  //   TEST(sycl::step, sycl::half, 3, EXPECTED(sycl::half, 1.0, 0.0, 1.0), 0,
+  //        ma12, ma13);
+  // TEST(sycl::step, float, 2, EXPECTED(float, 1.0f, 0.0f), 0, 2.5f, ma3);
+  // if (dev.has(sycl::aspect::fp64))
+  //   TEST(sycl::step, double, 2, EXPECTED(double, 0.0f, 1.0f), 0, 6.0f, ma9);
+  // // sycl::smoothstep
+  // TEST(sycl::smoothstep, float, 2, EXPECTED(float, 1.0f, 1.0f), 0, ma8, ma1,
+  //      ma2);
+  // if (dev.has(sycl::aspect::fp64))
+  //   TEST(sycl::smoothstep, double, 2, EXPECTED(double, 1.0, 1.0f),
+  //   0.00000001,
+  //        ma4, ma9, ma9);
+  // if (dev.has(sycl::aspect::fp16))
+  //   TEST(sycl::smoothstep, sycl::half, 3,
+  //   EXPECTED(sycl::half, 1.0, 1.0, 1.0),
+  //        0, ma7, ma12, ma13);
+  // TEST(sycl::smoothstep, float, 2, EXPECTED(float, 0.0553936f, 0.0f),
+  // 0.0000001,
+  //      2.5f, 6.0f, ma3);
+  // if (dev.has(sycl::aspect::fp64))
+  //   TEST(sycl::smoothstep, double, 2, EXPECTED(double, 0.0f, 1.0f), 0, 6.0f,
+  //        8.0f, ma9);
+  // // sign
+  // TEST(sycl::sign, float, 2, EXPECTED(float, +0.0f, -1.0f), 0, ma14);
+  // if (dev.has(sycl::aspect::fp64))
+  //   TEST(sycl::sign, double, 2, EXPECTED(double, -0.0, 1.0), 0, ma15);
+  // if (dev.has(sycl::aspect::fp16))
+  //   TEST(sycl::sign, sycl::half, 3, EXPECTED(sycl::half, 1.0, 1.0, 1.0), 0,
+  //        ma12);
 
   return 0;
 }

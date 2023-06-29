@@ -1205,201 +1205,257 @@ nan(marray<T, N> nancode) __NOEXC {
 }
 
 /* --------------- 4.13.5 Common functions. ---------------------------------*/
-// svgenfloat clamp (svgenfloat x, svgenfloat minval, svgenfloat maxval)
-template <typename T>
-std::enable_if_t<detail::is_svgenfloat<T>::value, T> clamp(T x, T minval,
-                                                           T maxval) __NOEXC {
-  return __sycl_std::__invoke_fclamp<T>(x, minval, maxval);
-}
+// genfloat clamp (genfloat x, genfloat minval, genfloat maxval)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE clamp(TYPE x, TYPE minval, TYPE maxval) __NOEXC {                \
+    return __sycl_std::__invoke_fclamp<TYPE>(x, minval, maxval);               \
+  }
+__SYCL_DEF_BUILTIN_GENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-// vgenfloath clamp (vgenfloath x, half minval, half maxval)
-// vgenfloatf clamp (vgenfloatf x, float minval, float maxval)
-// vgenfloatd clamp (vgenfloatd x, double minval, double maxval)
-template <typename T>
-std::enable_if_t<detail::is_vgenfloat<T>::value, T>
-clamp(T x, typename T::element_type minval,
-      typename T::element_type maxval) __NOEXC {
-  return __sycl_std::__invoke_fclamp<T>(x, T(minval), T(maxval));
-}
+// genfloath clamp (genfloath x, half minval, half maxval)
+// genfloatf clamp (genfloatf x, float minval, float maxval)
+// genfloatd clamp (genfloatd x, double minval, double maxval)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE fmin(TYPE x, TYPE::element_type minval,                          \
+                   TYPE::element_type maxval) __NOEXC {                        \
+    return __sycl_std::__invoke_fclamp<TYPE>(x, TYPE(minval), TYPE(maxval));   \
+  }
+__SYCL_DEF_BUILTIN_VGENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-// svgenfloat degrees (svgenfloat radians)
-template <typename T>
-std::enable_if_t<detail::is_svgenfloat<T>::value, T>
-degrees(T radians) __NOEXC {
-  return __sycl_std::__invoke_degrees<T>(radians);
-}
+// genfloat degrees (genfloat radians)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE degrees(TYPE radians) __NOEXC {                                  \
+    return __sycl_std::__invoke_degrees<TYPE>(radians);                        \
+  }
+__SYCL_DEF_BUILTIN_GENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-// svgenfloat abs (svgenfloat x)
-template <typename T>
-std::enable_if_t<detail::is_svgenfloat<T>::value, T> abs(T x) __NOEXC {
-  return __sycl_std::__invoke_fabs<T>(x);
-}
+// genfloat abs (genfloat x)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE abs(TYPE x) __NOEXC { return __sycl_std::__invoke_fabs<TYPE>(x); }
+__SYCL_DEF_BUILTIN_GENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-// svgenfloat max (svgenfloat x, svgenfloat y)
-template <typename T>
-std::enable_if_t<detail::is_svgenfloat<T>::value, T>(max)(T x, T y) __NOEXC {
-  return __sycl_std::__invoke_fmax_common<T>(x, y);
-}
+// genfloat max (genfloat x, genfloat y)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE max(TYPE x, TYPE y) __NOEXC {                                    \
+    return __sycl_std::__invoke_fmax_common<TYPE>(x, y);                       \
+  }
+__SYCL_DEF_BUILTIN_GENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-// vgenfloatf max (vgenfloatf x, float y)
-// vgenfloatd max (vgenfloatd x, double y)
-// vgenfloath max (vgenfloath x, half y)
-template <typename T>
-std::enable_if_t<detail::is_vgenfloat<T>::value, T>(max)(
-    T x, typename T::element_type y) __NOEXC {
-  return __sycl_std::__invoke_fmax_common<T>(x, T(y));
-}
+// genfloatf max (genfloatf x, float y)
+// genfloatd max (genfloatd x, double y)
+// genfloath max (genfloath x, half y)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE(max)(TYPE x, TYPE::element_type y) __NOEXC {                     \
+    return __sycl_std::__invoke_fmax_common<TYPE>(x, TYPE(y));                 \
+  }
+__SYCL_DEF_BUILTIN_VGENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-// svgenfloat min (svgenfloat x, svgenfloat y)
-template <typename T>
-std::enable_if_t<detail::is_svgenfloat<T>::value, T>(min)(T x, T y) __NOEXC {
-  return __sycl_std::__invoke_fmin_common<T>(x, y);
-}
+// genfloat min (genfloat x, genfloat y)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE min(TYPE x, TYPE y) __NOEXC {                                    \
+    return __sycl_std::__invoke_fmin_common<TYPE>(x, y);                       \
+  }
+__SYCL_DEF_BUILTIN_GENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-// vgenfloatf min (vgenfloatf x, float y)
-// vgenfloatd min (vgenfloatd x, double y)
-// vgenfloath min (vgenfloath x, half y)
-template <typename T>
-std::enable_if_t<detail::is_vgenfloat<T>::value, T>(min)(
-    T x, typename T::element_type y) __NOEXC {
-  return __sycl_std::__invoke_fmin_common<T>(x, T(y));
-}
+// genfloatf min (genfloatf x, float y)
+// genfloatd min (genfloatd x, double y)
+// genfloath min (genfloath x, half y)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE(min)(TYPE x, TYPE::element_type y) __NOEXC {                     \
+    return __sycl_std::__invoke_fmin_common<TYPE>(x, TYPE(y));                 \
+  }
+__SYCL_DEF_BUILTIN_VGENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-// svgenfloat mix (svgenfloat x, svgenfloat y, svgenfloat a)
-template <typename T>
-std::enable_if_t<detail::is_svgenfloat<T>::value, T> mix(T x, T y,
-                                                         T a) __NOEXC {
-  return __sycl_std::__invoke_mix<T>(x, y, a);
-}
+// genfloat mix (genfloat x, genfloat y, genfloat a)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE mix(TYPE x, TYPE y, TYPE a) __NOEXC {                            \
+    return __sycl_std::__invoke_mix<TYPE>(x, y, a);                            \
+  }
+__SYCL_DEF_BUILTIN_GENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-// vgenfloatf mix (vgenfloatf x, vgenfloatf y, float a)
-// vgenfloatd mix (vgenfloatd x, vgenfloatd y, double a)
-// vgenfloatd mix (vgenfloath x, vgenfloath y, half a)
-template <typename T>
-std::enable_if_t<detail::is_vgenfloat<T>::value, T>
-mix(T x, T y, typename T::element_type a) __NOEXC {
-  return __sycl_std::__invoke_mix<T>(x, y, T(a));
-}
+// genfloatf mix (genfloatf x, genfloatf y, float a)
+// genfloatd mix (genfloatd x, genfloatd y, double a)
+// genfloatd mix (genfloath x, genfloath y, half a)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE mix(TYPE x, TYPE y, TYPE::element_type a) __NOEXC {              \
+    return __sycl_std::__invoke_mix<TYPE>(x, y, TYPE(a));                      \
+  }
+__SYCL_DEF_BUILTIN_VGENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-// svgenfloat radians (svgenfloat degrees)
-template <typename T>
-std::enable_if_t<detail::is_svgenfloat<T>::value, T>
-radians(T degrees) __NOEXC {
-  return __sycl_std::__invoke_radians<T>(degrees);
-}
+// genfloat radians (genfloat degrees)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE radians(TYPE degrees) __NOEXC {                                  \
+    return __sycl_std::__invoke_radians<TYPE>(degrees);                        \
+  }
+__SYCL_DEF_BUILTIN_GENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-// svgenfloat step (svgenfloat edge, svgenfloat x)
-template <typename T>
-std::enable_if_t<detail::is_svgenfloat<T>::value, T> step(T edge, T x) __NOEXC {
-  return __sycl_std::__invoke_step<T>(edge, x);
-}
+// genfloat step (genfloat edge, genfloat x)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE step(TYPE edge, TYPE x) __NOEXC {                                \
+    return __sycl_std::__invoke_step<TYPE>(edge, x);                           \
+  }
+__SYCL_DEF_BUILTIN_GENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-// vgenfloatf step (float edge, vgenfloatf x)
-// vgenfloatd step (double edge, vgenfloatd x)
-// vgenfloatd step (half edge, vgenfloath x)
-template <typename T>
-std::enable_if_t<detail::is_vgenfloat<T>::value, T>
-step(typename T::element_type edge, T x) __NOEXC {
-  return __sycl_std::__invoke_step<T>(T(edge), x);
-}
+// genfloatf step (float edge, genfloatf x)
+// genfloatd step (double edge, genfloatd x)
+// genfloatd step (half edge, genfloath x)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE step(TYPE::element_type edge, TYPE x) __NOEXC {                  \
+    return __sycl_std::__invoke_step<TYPE>(TYPE(edge), x);                     \
+  }
+__SYCL_DEF_BUILTIN_VGENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-// svgenfloat smoothstep (svgenfloat edge0, svgenfloat edge1, svgenfloat x)
-template <typename T>
-std::enable_if_t<detail::is_svgenfloat<T>::value, T>
-smoothstep(T edge0, T edge1, T x) __NOEXC {
-  return __sycl_std::__invoke_smoothstep<T>(edge0, edge1, x);
-}
+// genfloat smoothstep (genfloat edge0, genfloat edge1, genfloat x)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE smoothstep(TYPE edge0, TYPE edge1, TYPE x) __NOEXC {             \
+    return __sycl_std::__invoke_smoothstep<TYPE>(edge0, edge1, x);             \
+  }
+__SYCL_DEF_BUILTIN_GENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-// vgenfloatf smoothstep (float edge0, float edge1, vgenfloatf x)
-// vgenfloatd smoothstep (double edge0, double edge1, vgenfloatd x)
-// vgenfloath smoothstep (half edge0, half edge1, vgenfloath x)
-template <typename T>
-std::enable_if_t<detail::is_vgenfloat<T>::value, T>
-smoothstep(typename T::element_type edge0, typename T::element_type edge1,
-           T x) __NOEXC {
-  return __sycl_std::__invoke_smoothstep<T>(T(edge0), T(edge1), x);
-}
+// genfloatf smoothstep (float edge0, float edge1, genfloatf x)
+// genfloatd smoothstep (double edge0, double edge1, genfloatd x)
+// genfloath smoothstep (half edge0, half edge1, genfloath x)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE smoothstep(TYPE::element_type edge0, TYPE::element_type edge1,   \
+                         TYPE x) __NOEXC {                                     \
+    return __sycl_std::__invoke_smoothstep<TYPE>(TYPE(edge0), TYPE(edge1), x); \
+  }
+__SYCL_DEF_BUILTIN_VGENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-// svgenfloat sign (svgenfloat x)
-template <typename T>
-std::enable_if_t<detail::is_svgenfloat<T>::value, T> sign(T x) __NOEXC {
-  return __sycl_std::__invoke_sign<T>(x);
-}
+// genfloat sign (genfloat x)
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  inline TYPE sign(TYPE x) __NOEXC {                                           \
+    return __sycl_std::__invoke_sign<TYPE>(x);                                 \
+  }
+__SYCL_DEF_BUILTIN_GENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
 // marray common functions
 
 // TODO: can be optimized in the way math functions are optimized (usage of
 // vec<T, 2>)
-#define __SYCL_MARRAY_COMMON_FUNCTION_OVERLOAD_IMPL(NAME, ...)                 \
-  T res;                                                                       \
-  for (int i = 0; i < T::size(); i++) {                                        \
+#define __SYCL_MARRAY_COMMON_FUNCTION_OVERLOAD_IMPL(TYPE, NAME, ...)           \
+  marray<TYPE, NElems> res;                                                    \
+  for (int i = 0; i < NElems; i++)                                             \
     res[i] = NAME(__VA_ARGS__);                                                \
-  }                                                                            \
   return res;
 
-#define __SYCL_MARRAY_COMMON_FUNCTION_UNOP_OVERLOAD(NAME, ARG, ...)            \
-  template <typename T,                                                        \
-            typename = std::enable_if_t<detail::is_mgenfloat<T>::value>>       \
-  T NAME(ARG) __NOEXC {                                                        \
-    __SYCL_MARRAY_COMMON_FUNCTION_OVERLOAD_IMPL(NAME, __VA_ARGS__)             \
+#define __SYCL_MARRAY_COMMON_FUNCTION_UNOP_OVERLOAD(TYPE, NAME, ARG, ...)      \
+  template <size_t NElems>                                                     \
+  marray<TYPE, NElems> NAME(marray<TYPE, NElems> ARG) __NOEXC {                \
+    __SYCL_MARRAY_COMMON_FUNCTION_OVERLOAD_IMPL(TYPE, NAME, __VA_ARGS__)       \
   }
+// #define __SYCL_MARRAY_COMMON_FUNCTION_UNOP_OVERLOAD(TYPE, NAME, ARG, ...)         \
+//   template <size_t NElems>                                                        \
+//   marray<TYPE, NElems> degrees(marray<TYPE, NElems> radians) __NOEXC {          \
+//     marray<TYPE, NElems> res;                                                    \
+//     for (int i = 0; i < NElems; i++)                                              \
+//       res[i] = degrees(radians[i]);                                               \
+//     return res; \
+//   }
 
-__SYCL_MARRAY_COMMON_FUNCTION_UNOP_OVERLOAD(degrees, T radians, radians[i])
-__SYCL_MARRAY_COMMON_FUNCTION_UNOP_OVERLOAD(radians, T degrees, degrees[i])
-__SYCL_MARRAY_COMMON_FUNCTION_UNOP_OVERLOAD(sign, T x, x[i])
+#define __SYCL_BUILTIN_DEF(TYPE)                                               \
+  __SYCL_MARRAY_COMMON_FUNCTION_UNOP_OVERLOAD(TYPE, degrees, radians,          \
+                                              radians[i])
+__SYCL_DEF_BUILTIN_SGENFLOAT
+#undef __SYCL_BUILTIN_DEF
 
-#undef __SYCL_MARRAY_COMMON_FUNCTION_UNOP_OVERLOAD
+// template <size_t NElems>
+// marray<float, NElems> degrees(marray<float, NElems> radians) __NOEXC {
+//   marray<float, NElems> res;
+//   for (int i = 0; i < NElems; i++)
+//     res[i] = degrees(radians[i]);
+//   return res;
+// }
+// template <size_t NElems>
+// marray<float, NElems> degrees(marray<double, NElems> radians) __NOEXC {
+//   marray<float, NElems> res;
+//   for (int i = 0; i < NElems; i++)
+//     res[i] = degrees(radians[i]);
+//   return res;
+// }
+// template <size_t NElems>
+// marray<float, NElems> degrees(marray<half, NElems> radians) __NOEXC {
+//   marray<float, NElems> res;
+//   for (int i = 0; i < NElems; i++)
+//     res[i] = degrees(radians[i]);
+//   return res;
+// }
 
-#define __SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD(NAME, ARG1, ARG2, ...)    \
-  template <typename T,                                                        \
-            typename = std::enable_if_t<detail::is_mgenfloat<T>::value>>       \
-  T NAME(ARG1, ARG2) __NOEXC {                                                 \
-    __SYCL_MARRAY_COMMON_FUNCTION_OVERLOAD_IMPL(NAME, __VA_ARGS__)             \
-  }
+// __SYCL_MARRAY_COMMON_FUNCTION_UNOP_OVERLOAD(TYPE, radians, T degrees,
+// degrees[i])
+// __SYCL_MARRAY_COMMON_FUNCTION_UNOP_OVERLOAD(TYPE, sign, T x, x[i])
 
-// min and max may be defined as macros, so we wrap them in parentheses to avoid
-// errors.
-__SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD((min), T x, T y, x[i], y[i])
-__SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD((min), T x,
-                                             detail::marray_element_t<T> y,
-                                             x[i], y)
-__SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD((max), T x, T y, x[i], y[i])
-__SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD((max), T x,
-                                             detail::marray_element_t<T> y,
-                                             x[i], y)
-__SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD(step, T edge, T x, edge[i], x[i])
-__SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD(step,
-                                             detail::marray_element_t<T> edge,
-                                             T x, edge, x[i])
+// #undef __SYCL_MARRAY_COMMON_FUNCTION_UNOP_OVERLOAD
 
-#undef __SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD
+// #define __SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD(NAME, ARG1, ARG2, ...)    \
+//   template <typename T,                                                        \
+//             typename = std::enable_if_t<detail::is_mgenfloat<T>::value>>       \
+//   T NAME(ARG1, ARG2) __NOEXC {                                                 \
+//     __SYCL_MARRAY_COMMON_FUNCTION_OVERLOAD_IMPL(NAME, __VA_ARGS__)             \
+//   }
 
-#define __SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD(NAME, ARG1, ARG2, ARG3,   \
-                                                     ...)                      \
-  template <typename T,                                                        \
-            typename = std::enable_if_t<detail::is_mgenfloat<T>::value>>       \
-  T NAME(ARG1, ARG2, ARG3) __NOEXC {                                           \
-    __SYCL_MARRAY_COMMON_FUNCTION_OVERLOAD_IMPL(NAME, __VA_ARGS__)             \
-  }
+// // min and max may be defined as macros, so we wrap them in parentheses to
+// avoid
+// // errors.
+// __SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD((min), T x, T y, x[i], y[i])
+// __SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD((min), T x,
+//                                              detail::marray_element_t<T> y,
+//                                              x[i], y)
+// __SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD((max), T x, T y, x[i], y[i])
+// __SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD((max), T x,
+//                                              detail::marray_element_t<T> y,
+//                                              x[i], y)
+// __SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD(step, T edge, T x, edge[i],
+// x[i])
+// __SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD(step,
+//                                              detail::marray_element_t<T>
+//                                              edge, T x, edge, x[i])
 
-__SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD(clamp, T x, T minval, T maxval,
-                                             x[i], minval[i], maxval[i])
-__SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD(
-    clamp, T x, detail::marray_element_t<T> minval,
-    detail::marray_element_t<T> maxval, x[i], minval, maxval)
-__SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD(mix, T x, T y, T a, x[i], y[i],
-                                             a[i])
-__SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD(mix, T x, T y,
-                                             detail::marray_element_t<T> a,
-                                             x[i], y[i], a)
-__SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD(smoothstep, T edge0, T edge1, T x,
-                                             edge0[i], edge1[i], x[i])
-__SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD(
-    smoothstep, detail::marray_element_t<T> edge0,
-    detail::marray_element_t<T> edge1, T x, edge0, edge1, x[i])
+// #undef __SYCL_MARRAY_COMMON_FUNCTION_BINOP_OVERLOAD
 
-#undef __SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD
-#undef __SYCL_MARRAY_COMMON_FUNCTION_OVERLOAD_IMPL
+// #define __SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD(NAME, ARG1, ARG2, ARG3,   \
+//                                                      ...)                      \
+//   template <typename T,                                                        \
+//             typename = std::enable_if_t<detail::is_mgenfloat<T>::value>>       \
+//   T NAME(ARG1, ARG2, ARG3) __NOEXC {                                           \
+//     __SYCL_MARRAY_COMMON_FUNCTION_OVERLOAD_IMPL(NAME, __VA_ARGS__)             \
+//   }
+
+// __SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD(clamp, T x, T minval, T maxval,
+//                                              x[i], minval[i], maxval[i])
+// __SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD(
+//     clamp, T x, detail::marray_element_t<T> minval,
+//     detail::marray_element_t<T> maxval, x[i], minval, maxval)
+// __SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD(mix, T x, T y, T a, x[i], y[i],
+//                                              a[i])
+// __SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD(mix, T x, T y,
+//                                              detail::marray_element_t<T> a,
+//                                              x[i], y[i], a)
+// __SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD(smoothstep, T edge0, T edge1, T
+// x,
+//                                              edge0[i], edge1[i], x[i])
+// __SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD(
+//     smoothstep, detail::marray_element_t<T> edge0,
+//     detail::marray_element_t<T> edge1, T x, edge0, edge1, x[i])
+
+// #undef __SYCL_MARRAY_COMMON_FUNCTION_TEROP_OVERLOAD
+// #undef __SYCL_MARRAY_COMMON_FUNCTION_OVERLOAD_IMPL
 
 /* --------------- 4.13.4 Integer functions. --------------------------------*/
 // ugeninteger abs (geninteger x)
