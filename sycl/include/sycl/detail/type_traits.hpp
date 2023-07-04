@@ -28,6 +28,7 @@ inline constexpr bool is_fixed_size_group_v = is_fixed_size_group<T>::value;
 } // namespace detail
 
 template <int Dimensions> class group;
+struct sub_group;
 namespace ext::oneapi {
 struct sub_group;
 
@@ -49,6 +50,9 @@ struct is_fixed_topology_group<sycl::group<Dimensions>> : std::true_type {};
 
 template <>
 struct is_fixed_topology_group<sycl::ext::oneapi::sub_group> : std::true_type {
+};
+template <>
+struct is_fixed_topology_group<sycl::sub_group> : std::true_type {
 };
 
 template <class T> struct is_user_constructed_group : std::false_type {};
@@ -77,6 +81,7 @@ struct is_group<group<Dimensions>> : std::true_type {};
 template <typename T> struct is_sub_group : std::false_type {};
 
 template <> struct is_sub_group<ext::oneapi::sub_group> : std::true_type {};
+template <> struct is_sub_group<sycl::sub_group> : std::true_type {};
 
 template <typename T>
 struct is_generic_group

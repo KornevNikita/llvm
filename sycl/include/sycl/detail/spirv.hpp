@@ -63,6 +63,9 @@ template <int Dimensions> struct group_scope<group<Dimensions>> {
 template <> struct group_scope<::sycl::ext::oneapi::sub_group> {
   static constexpr __spv::Scope::Flag value = __spv::Scope::Flag::Subgroup;
 };
+template <> struct group_scope<::sycl::sub_group> {
+  static constexpr __spv::Scope::Flag value = __spv::Scope::Flag::Subgroup;
+};
 
 template <typename ParentGroup>
 struct group_scope<sycl::ext::oneapi::experimental::ballot_group<ParentGroup>> {

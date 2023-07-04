@@ -128,8 +128,7 @@ namespace experimental {
 inline sub_group this_sub_group();
 }
 
-struct sub_group {
-
+struct __SYCL_DEPRECATED("use sycl::sub_group() instead") sub_group {
   using id_type = id<1>;
   using range_type = range<1>;
   using linear_id_type = uint32_t;

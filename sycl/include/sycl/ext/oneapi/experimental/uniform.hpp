@@ -34,7 +34,7 @@ template <int> class nd_item;
 template <int> class h_item;
 template <int> class group;
 template <int> class nd_range;
-using ext::oneapi::sub_group;
+using sycl::sub_group;
 
 } // __SYCL_INLINE_VER_NAMESPACE(_V1)
 } // namespace sycl
