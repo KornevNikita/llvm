@@ -24,8 +24,7 @@ jobs:
         with:
           scan-type: 'config'
           scan-ref: devops/containers
-          hide-progress: true
-          trivyignores: devops/.trivyignore
+          trivyignores: devops/.trivyignore.txt
           format: 'sarif'
           output: 'trivy-results.sarif'
 
