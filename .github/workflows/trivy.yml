@@ -25,5 +25,5 @@ jobs:
         with:
           scan-type: 'config'
           scan-ref: devops/containers
-          trivyignores: devops/.trivyignore.txt
+          trivyignores: devops/.trivyignore
           exit-code: 1
