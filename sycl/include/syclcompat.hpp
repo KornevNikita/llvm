@@ -20,6 +20,7 @@
  *    Main include header for SYCLcompat
  **************************************************************************/
 
+
 #pragma once
 
 #include <syclcompat/syclcompat.hpp>
