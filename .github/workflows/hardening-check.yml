@@ -1,0 +1,87 @@
+name: Hardening checks
+
+permissions: read-all
+
+on:
+  workflow_dispatch:
+  workflow_call:
+    inputs:
+      sycl_toolchain_artifact:
+        type: string
+        required: True
+      sycl_toolchain_archive:
+        type: string
+        required: True
+      sycl_toolchain_decompress_command:
+        type: string
+        required: True
+
+jobs:
+  hardening_check:
+    runs-on: ubuntu-latest
+    if: github.repository == 'intel/llvm'
+
+    steps:
+    - name: Install hardening-check
+      run: |
+        sudo apt update
+        sudo apt install -y devscripts
+        hardening-check --version
+
+    - name: Download SYCL toolchain
+      # uses: actions/download-artifact@v4
+      run: |
+        wget https://github.com/intel/llvm/releases/download/nightly-2025-04-09/sycl_linux.tar.gz
+      # with:
+      #   name: ${{ inputs.sycl_toolchain_artifact }}
+
+    - name: Extract SYCL toolchain
+      run: |
+        mkdir toolchain
+        # tar -I '${{ inputs.sycl_toolchain_decompress_command }}' -xf ${{ inputs.sycl_toolchain_archive }} -C toolchain
+        tar -xf sycl_linux.tar.gz -C toolchain
+
+    - name: Perform checks
+      run: |
+        for file in ./toolchain/bin/*; do
+            hardening-check "$file" | tee -a "./hardening-check.txt"
+        done
+        
+        for file in $(find ./toolchain/lib/ -type f -name "*.so*"); do
+            hardening-check "$file" | tee -a "./hardening-check.txt"
+        done
+
+    - uses: actions/upload-artifact@v4
+      with:
+        name: hardening_check
+        path: |
+          hardening-check.txt
+
+  # winchecksec:
+  #   runs-on: windows-latest
+  #   if: github.repository == 'intel/llvm'
+
+  #   steps:
+  #   - name: Install winchecksec
+  #     run: |
+  #       CURL $env:WINCHECKSEC_URL
+  #       unzip windows.x64.Release.zip
+  #       echo "$pwd\build\Release" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+  #   - name: Download and check Windows artifacts
+  #     run: |
+  #       echo "Download artifact %ZIP_URL%" >> %GITHUB_STEP_SUMMARY%
+  #       wget -q -O archive.zip $env:ZIP_URL
+  #       7z.exe x archive.zip
+  #       cd ispc-*
+  #       winchecksec.exe bin\ispc.exe >> ..\winchecksec-report-trunk.txt
+  #       winchecksec.exe bin\ispcrt.dll >> ..\winchecksec-report-trunk.txt
+  #       winchecksec.exe bin\ispcrt_device_cpu.dll >> ..\winchecksec-report-trunk.txt
+  #       # Not GPU device is built in trunk Windows build
+  #       # winchecksec.exe bin\ispcrt_device_gpu.dll >> ..\winchecksec-report-trunk.txt
+
+  #   - uses: actions/upload-artifact@65c4c4a1ddee5b72f698fdd19549f0f0fb45cf08 # v4.6.0
+  #     with:
+  #       name: winchecksec_report
+  #       path: |
+  #         winchecksec-report-trunk.txt
