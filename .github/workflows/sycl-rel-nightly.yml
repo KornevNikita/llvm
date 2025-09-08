@@ -24,5 +24,7 @@ jobs:
         with:
           name: sycl_windows_release
           path: sycl_windows.tar.gz
-      - name: Trigger sign-release-builds workflow
-        uses: ./.github/workflows/sycl-sign-release-builds.yml
+  sign-release-builds:
+    needs: dummy
+    name: Trigger sign-release-builds workflow
+    uses: ./.github/workflows/sycl-sign-release-builds.yml
