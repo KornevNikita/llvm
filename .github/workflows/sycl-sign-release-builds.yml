@@ -9,6 +9,8 @@ permissions:
 jobs:
   sign-artifact:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
     steps:
       - name: Download artifact
         run: |
