@@ -7,6 +7,8 @@ name: SYCL Release Branch Nightly
 on:
   workflow_dispatch:
 
+permissions: read-all
+
 jobs:
   dummy:
     runs-on: ubuntu-latest
@@ -28,3 +30,5 @@ jobs:
     needs: dummy
     name: Trigger sign-release-builds workflow
     uses: ./.github/workflows/sycl-sign-release-builds.yml
+    permissions:
+      id-token: write
