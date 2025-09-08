@@ -11,4 +11,18 @@ jobs:
   dummy:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "Doing nothing"
+      - run: |
+          echo "Doing nothing"
+          touch sycl_linux.tar.gz sycl_windows.tar.gz
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sycl_linux_release
+          path: sycl_linux.tar.gz
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sycl_windows_release
+          path: sycl_windows.tar.gz
+      - name: Trigger sign-release-builds workflow
+        uses: ./.github/workflows/sycl-sign-release-builds.yml
