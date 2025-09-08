@@ -14,8 +14,8 @@ jobs:
     steps:
       - name: Download artifact
         run: |
-          gh run download ${{ github.run_id }} -n sycl_linux_release
-          gh run download ${{ github.run_id }} -n sycl_windows_release
+          gh run download ${{ github.run_id }} -R KornevNikita/llvm -n sycl_linux_release
+          gh run download ${{ github.run_id }} -R KornevNikita/llvm -n sycl_windows_release
 
       - name: Sign with Sigstore
         uses: sigstore/gh-action-sigstore-python@v3.0.1
