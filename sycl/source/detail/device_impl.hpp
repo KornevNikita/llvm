@@ -1580,8 +1580,7 @@ public:
           .value_or(0);
     }
     CASE(ext_oneapi_clock_sub_group) {
-      // Will be updated in a follow-up UR patch.
-      return false;
+      return get_info_impl_nocheck<UR_DEVICE_INFO_CLOCK_SUB_GROUP_SUPPORT_EXP>().value_or(0);
     }
     CASE(ext_oneapi_clock_work_group) {
       // Will be updated in a follow-up UR patch.
