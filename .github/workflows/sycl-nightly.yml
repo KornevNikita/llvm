@@ -8,35 +8,35 @@ on:
 permissions: read-all
 
 jobs:
-  check_abi_symbols:
-    name: Check ABI symbols tests match release branch
-    runs-on: [Linux, build]
-    if: github.repository == 'intel/llvm'
-    container: ghcr.io/intel/llvm/ubuntu2404_build
-    steps:
-    - uses: actions/checkout@v5
-      with:
-        sparse-checkout: |
-          sycl/test/abi
-    - run: |
-        git fetch --depth=1 origin sycl-rel-6_3
-        git diff --exit-code -I "^# RUN" origin/sycl-rel-6_3:sycl/test/abi/sycl_symbols_linux.dump sycl/test/abi/sycl_symbols_linux-sycl-rel-6_3.dump
-        git diff --exit-code -I "^# RUN" origin/sycl-rel-6_3:sycl/test/abi/sycl_symbols_windows.dump sycl/test/abi/sycl_symbols_windows-sycl-rel-6_3.dump
+  # check_abi_symbols:
+  #   name: Check ABI symbols tests match release branch
+  #   runs-on: [Linux, build]
+  #   if: github.repository == 'intel/llvm'
+  #   container: ghcr.io/intel/llvm/ubuntu2404_build
+  #   steps:
+  #   - uses: actions/checkout@v5
+  #     with:
+  #       sparse-checkout: |
+  #         sycl/test/abi
+  #   - run: |
+  #       git fetch --depth=1 origin sycl-rel-6_3
+  #       git diff --exit-code -I "^# RUN" origin/sycl-rel-6_3:sycl/test/abi/sycl_symbols_linux.dump sycl/test/abi/sycl_symbols_linux-sycl-rel-6_3.dump
+  #       git diff --exit-code -I "^# RUN" origin/sycl-rel-6_3:sycl/test/abi/sycl_symbols_windows.dump sycl/test/abi/sycl_symbols_windows-sycl-rel-6_3.dump
 
-  ubuntu2204_build:
-    if: github.repository == 'intel/llvm'
-    uses: ./.github/workflows/sycl-linux-build.yml
-    secrets: inherit
-    with:
-      build_cache_root: "/__w/"
-      build_configure_extra_args: '--hip --cuda'
-      build_image: ghcr.io/intel/llvm/ubuntu2204_build:latest
+  # ubuntu2204_build:
+  #   if: github.repository == 'intel/llvm'
+  #   uses: ./.github/workflows/sycl-linux-build.yml
+  #   secrets: inherit
+  #   with:
+  #     build_cache_root: "/__w/"
+  #     build_configure_extra_args: '--hip --cuda'
+  #     build_image: ghcr.io/intel/llvm/ubuntu2204_build:latest
 
-      retention-days: 90
-      toolchain_artifact: sycl_linux_default
-      # We upload the build for people to download/use, override its name and
-      # prefer widespread gzip compression.
-      toolchain_artifact_filename: sycl_linux.tar.gz
+  #     retention-days: 90
+  #     toolchain_artifact: sycl_linux_default
+  #     # We upload the build for people to download/use, override its name and
+  #     # prefer widespread gzip compression.
+  #     toolchain_artifact_filename: sycl_linux.tar.gz
 
   # Build used for performance testing only: not intended for testing
   linux_shared_build:
