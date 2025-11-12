@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   bandit:
-    if: github.repository == 'intel/llvm'
+    # if: github.repository == 'intel/llvm'
     name: Bandit
     runs-on: ubuntu-latest
     permissions:
