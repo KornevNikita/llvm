@@ -340,3 +340,4 @@ jobs:
         tags: |
           ghcr.io/${{ github.repository }}/sycl_ubuntu2404_nightly:${{ github.sha }}
           ghcr.io/${{ github.repository }}/sycl_ubuntu2404_nightly:latest
+
