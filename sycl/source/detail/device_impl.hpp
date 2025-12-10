@@ -2275,6 +2275,12 @@ public:
     return {};
   }
 
+  bool is_root() const {
+    // There could be a bool member in device_impl.
+    auto ur_parent_dev = get_info_impl<UR_DEVICE_INFO_PARENT_DEVICE>();
+    return ur_parent_dev == nullptr;
+  }
+
 private:
   ur_device_handle_t MDevice = 0;
   // This is used for getAdapter so should be above other properties.

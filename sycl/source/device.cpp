@@ -344,6 +344,9 @@ context device::ext_oneapi_get_default_context() {
 }
 
 size_t device::ext_oneapi_index_within_platform() const {
+  if (!impl->is_root())
+    throw sycl::exception(sycl::make_error_code(errc::invalid),
+                          "this device is not a root device");
   return impl->getIndexWithinPlatform();
 }
 
