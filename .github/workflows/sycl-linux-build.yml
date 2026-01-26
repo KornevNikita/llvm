@@ -226,25 +226,33 @@ jobs:
       continue-on-error: true
       id: clang_tidy
       run: |
-        # TODO: Need to check if source (c++) files were changed. Ignore test directories
         # TODO: make it possible to disable this step in case of big PRs like pulldown etc.
 
-        # cmake --build $GITHUB_WORKSPACE/build --target clang-tidy
-        # Make sure we have the base branch available locally for diff
-        # git fetch --no-tags origin "${BASE_REF}" --depth=1
+        # To perform git diff
+        git fetch origin ${{ github.base_ref }}
+
+        # Skip if no C++ files were changed
+        # TODO: at the moment limit clang-tidy to the content of sycl branch AND exclude test dirs
+        ! git diff --name-only origin/${{ github.base_ref }}...${{ github.sha }} | grep -qE '\.(cpp|hpp)$'
+
+        # Remove commands containing the "-D__INTEL_PREVIEW_BREAKING_CHANGES" flag
+        jq '[ .[] | select(.command | contains("-D__INTEL_PREVIEW_BREAKING_CHANGES") | not) ]' $GITHUB_WORKSPACE/build/compile_commands.json > $GITHUB_WORKSPACE/build/compile_commands.temp.json
+        mv $GITHUB_WORKSPACE/build/compile_commands.temp.json $GITHUB_WORKSPACE/build/compile_commands.json
+
+        cmake --build $GITHUB_WORKSPACE/build --target clang-tidy
 
         # Produce a 0-context unified diff for the PR changes
         git diff -U0 "origin/${{ github.base_ref }}...${{ github.sha }}" > pr.patch
         # DEBUG
         cat pr.patch
 
-        # python3 "$GITHUB_WORKSPACE/clang-tools-extra/clang-tidy/tool/clang-tidy-diff.py" \
-        #   -clang-tidy-binary "$BUILD_DIR/bin/clang-tidy" \
-        #   -p 1 \
-        #   -path "$GITHUB_WORKSPACE/build" \
-        #   -checks "clang-analyzer-*,bugprone-*,performance-*" \
-        #   < pr.patch \
-        #   2>&1 | tee "$GITHUB_WORKSPACE/clang-tidy-output.log"
+        python3 "$GITHUB_WORKSPACE/clang-tools-extra/clang-tidy/tool/clang-tidy-diff.py" \
+          -clang-tidy-binary "$BUILD_DIR/bin/clang-tidy" \
+          -p 1 \
+          -path "$GITHUB_WORKSPACE/build" \
+          -checks "clang-analyzer-*,bugprone-*,performance-*" \
+          < pr.patch \
+          2>&1 | tee "$GITHUB_WORKSPACE/clang-tidy-output.log"
     - name: Upload clang-tidy log
       if: ${{ !cancelled() && steps.clang_tidy.outcome != 'skipped' }}
       uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
