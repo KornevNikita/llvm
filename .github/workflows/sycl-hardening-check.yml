@@ -20,6 +20,25 @@ on:
         default:
       windows_toolchain_artifact_filename:
         type: string
+  
+  workflow_dispatch:
+    inputs:
+      linux_toolchain_artifact:
+        type: string
+        default: sycl_linux_default
+      linux_toolchain_artifact_filename:
+        type: string
+        default: sycl_linux.tar.gz
+      linux_toolchain_decompress_command:
+        type: string
+        default: gunzip
+
+      windows_toolchain_artifact:
+        type: string
+        default: sycl_windows_default
+      windows_toolchain_artifact_filename:
+        type: string
+        default: sycl_windows.tar.gz
 
 jobs:
   hardening_check:
@@ -32,9 +51,10 @@ jobs:
         sudo apt install -y devscripts
 
     - name: Download SYCL toolchain
-      uses: actions/download-artifact@v7
-      with:
-        name: ${{ inputs.linux_toolchain_artifact }}
+      run: wget https://github.com/intel/llvm/releases/download/nightly-2026-02-03/sycl_linux.tar.gz
+    #   uses: actions/download-artifact@v7
+    #   with:
+    #     name: ${{ inputs.linux_toolchain_artifact }}
 
     - name: Extract SYCL toolchain
       run: |
@@ -67,9 +87,11 @@ jobs:
         unzip "windows.x64.Release.zip" -d winchecksec
 
     - name: Download SYCL toolchain
-      uses: actions/download-artifact@v7
-      with:
-        name: ${{ inputs.windows_toolchain_artifact }}
+      shell: bash
+      run: wget https://github.com/intel/llvm/releases/download/nightly-2026-02-03/sycl_windows.tar.gz
+      # uses: actions/download-artifact@v7
+      # with:
+      #   name: ${{ inputs.windows_toolchain_artifact }}
 
     - name: Extract SYCL toolchain
       shell: bash
