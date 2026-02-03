@@ -5,16 +5,20 @@ permissions: read-all
 on:
   workflow_call:
     inputs:
-      sycl_linux_artifact:
+      linux_toolchain_artifact:
         type: string
-      sycl_linux_archive:
+        default: sycl_linux_default
+      linux_toolchain_artifact_filename:
         type: string
-      sycl_linux_decompress_command:
+        default: sycl_linux.tar.gz
+      linux_toolchain_decompress_command:
         type: string
+        default: gunzip
 
-      sycl_windows_artifact:
+      windows_toolchain_artifact:
         type: string
-      sycl_windows_archive:
+        default:
+      windows_toolchain_artifact_filename:
         type: string
 
 jobs:
@@ -30,12 +34,12 @@ jobs:
     - name: Download SYCL toolchain
       uses: actions/download-artifact@v7
       with:
-        name: ${{ inputs.sycl_linux_artifact }}
+        name: ${{ inputs.linux_toolchain_artifact }}
 
     - name: Extract SYCL toolchain
       run: |
         mkdir toolchain
-        tar -I '${{ inputs.sycl_linux_decompress_command }}' -xf ${{ inputs.sycl_linux_archive }} -C toolchain
+        tar -I '${{ inputs.linux_toolchain_decompress_command }}' -xf ${{ inputs.linux_toolchain_artifact_filename }} -C toolchain
 
     - name: Perform checks
       run: |
@@ -65,15 +69,15 @@ jobs:
     - name: Download SYCL toolchain
       uses: actions/download-artifact@v7
       with:
-        name: ${{ inputs.sycl_windows_artifact }}
+        name: ${{ inputs.windows_toolchain_artifact }}
 
     - name: Extract SYCL toolchain
       shell: bash
       run: |
         mkdir toolchain
-        tar -xf ${{ inputs.sycl_windows_archive }} -C toolchain
+        tar -xf ${{ inputs.windows_toolchain_artifact_filename }} -C toolchain
 
-    - name: Download and check Windows artifacts
+    - name: Perform checks
       shell: bash
       run: |
         for file in $(find ./toolchain/bin/ -type f -name "*.exe"); do
