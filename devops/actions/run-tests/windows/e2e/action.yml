@@ -35,7 +35,7 @@ runs:
         sycl/test-e2e
   - name: Download E2E Binaries
     if: inputs.testing_mode == 'run-only'
-    uses: actions/download-artifact@v4
+    uses: actions/download-artifact@v8
     with:
       name: ${{ inputs.binaries_artifact }}
   - name: Extract E2E Binaries
@@ -116,7 +116,7 @@ runs:
       tar -czf e2e_bin.tar.gz -C build-e2e .
   - name: Upload E2E test binaries
     if: ${{ !cancelled() && inputs.binaries_artifact != '' && inputs.testing_mode != 'run-only' }}
-    uses: actions/upload-artifact@v4
+    uses: actions/upload-artifact@v7
     with:
       name: ${{ inputs.binaries_artifact }}
       path: e2e_bin.tar.gz
