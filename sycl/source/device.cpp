@@ -364,6 +364,9 @@ __SYCL_INTEL_DEVICE_INST(ext::intel::info::device, xe_cores_per_cluster,
 __SYCL_INTEL_DEVICE_INST(ext::intel::info::device, eus_per_xe_core, uint32_t)
 __SYCL_INTEL_DEVICE_INST(ext::intel::info::device, max_lanes_per_hw_thread,
                          uint32_t)
+__SYCL_INTEL_DEVICE_INST(ext::intel::info::device, igca, uint32_t)
+__SYCL_INTEL_DEVICE_INST(ext::intel::info::device, igca_feature_set,
+                         ext::intel::igca_feature)
 #undef __SYCL_INTEL_DEVICE_INST
 
 #define __SYCL_ONEAPI_DEVICE_INST(NS, NAME, RETURN_T)                          \

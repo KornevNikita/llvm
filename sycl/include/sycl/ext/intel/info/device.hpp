@@ -30,6 +30,8 @@ enum class throttle_reason {
   other
 };
 
+enum class igca_feature { render, compute };
+
 namespace info::device {
 
 template <ur_device_info_t UrCode>
@@ -118,6 +120,12 @@ struct eus_per_xe_core : device_traits<UR_DEVICE_INFO_EUS_PER_XE_CORE> {
 struct max_lanes_per_hw_thread
     : device_traits<UR_DEVICE_INFO_MAX_LANES_PER_HW_THREAD> {
   using return_type = uint32_t;
+};
+struct igca : device_traits<UR_DEVICE_INFO_IGCA> {
+  using return_type = uint32_t;
+};
+struct igca_feature_set : device_traits<UR_DEVICE_INFO_IGCA_FEATURE_SET> {
+  using return_type = sycl::ext::intel::igca_feature;
 };
 
 // RT-only: dispatched via explicit CASE in device_impl.hpp; no UR enum.

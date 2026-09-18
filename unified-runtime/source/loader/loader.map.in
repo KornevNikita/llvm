@@ -294,6 +294,7 @@
 		urPrintDeviceGetNativeHandleParams;
 		urPrintDeviceGetParams;
 		urPrintDeviceGetSelectedParams;
+		urPrintDeviceIgcaFeatureSet;
 		urPrintDeviceInfo;
 		urPrintDeviceInitFlags;
 		urPrintDeviceLocalMemType;

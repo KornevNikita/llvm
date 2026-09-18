@@ -367,6 +367,8 @@ operator<<(std::ostream &os, enum ur_device_usm_access_capability_flag_t value);
 inline std::ostream &operator<<(std::ostream &os,
                                 enum ur_device_throttle_reasons_flag_t value);
 inline std::ostream &operator<<(std::ostream &os,
+                                enum ur_device_igca_feature_set_t value);
+inline std::ostream &operator<<(std::ostream &os,
                                 enum ur_kernel_launch_properties_flag_t value);
 inline std::ostream &operator<<(std::ostream &os, enum ur_context_flag_t value);
 inline std::ostream &
@@ -3295,6 +3297,12 @@ inline std::ostream &operator<<(std::ostream &os, enum ur_device_info_t value) {
   case UR_DEVICE_INFO_MAX_LANES_PER_HW_THREAD:
     os << "UR_DEVICE_INFO_MAX_LANES_PER_HW_THREAD";
     break;
+  case UR_DEVICE_INFO_IGCA:
+    os << "UR_DEVICE_INFO_IGCA";
+    break;
+  case UR_DEVICE_INFO_IGCA_FEATURE_SET:
+    os << "UR_DEVICE_INFO_IGCA_FEATURE_SET";
+    break;
   case UR_DEVICE_INFO_COMMAND_BUFFER_SUPPORT_EXP:
     os << "UR_DEVICE_INFO_COMMAND_BUFFER_SUPPORT_EXP";
     break;
@@ -5238,6 +5246,33 @@ inline ur_result_t printTagged(std::ostream &os, const void *ptr,
 
     os << ")";
   } break;
+  case UR_DEVICE_INFO_IGCA: {
+    const uint32_t *tptr = (const uint32_t *)ptr;
+    if (sizeof(uint32_t) > size) {
+      os << "invalid size (is: " << size << ", expected: >=" << sizeof(uint32_t)
+         << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
+  case UR_DEVICE_INFO_IGCA_FEATURE_SET: {
+    const ur_device_igca_feature_set_t *tptr =
+        (const ur_device_igca_feature_set_t *)ptr;
+    if (sizeof(ur_device_igca_feature_set_t) > size) {
+      os << "invalid size (is: " << size
+         << ", expected: >=" << sizeof(ur_device_igca_feature_set_t) << ")";
+      return UR_RESULT_ERROR_INVALID_SIZE;
+    }
+    os << (const void *)(tptr) << " (";
+
+    os << *tptr;
+
+    os << ")";
+  } break;
   case UR_DEVICE_INFO_COMMAND_BUFFER_SUPPORT_EXP: {
     const ur_bool_t *tptr = (const ur_bool_t *)ptr;
     if (sizeof(ur_bool_t) > size) {
@@ -6884,6 +6919,25 @@ printFlag<ur_device_throttle_reasons_flag_t>(std::ostream &os, uint32_t flag) {
   return UR_RESULT_SUCCESS;
 }
 } // namespace ur::details
+///////////////////////////////////////////////////////////////////////////////
+/// @brief Print operator for the ur_device_igca_feature_set_t type
+/// @returns
+///     std::ostream &
+inline std::ostream &operator<<(std::ostream &os,
+                                enum ur_device_igca_feature_set_t value) {
+  switch (value) {
+  case UR_DEVICE_IGCA_FEATURE_SET_RENDER:
+    os << "UR_DEVICE_IGCA_FEATURE_SET_RENDER";
+    break;
+  case UR_DEVICE_IGCA_FEATURE_SET_COMPUTE:
+    os << "UR_DEVICE_IGCA_FEATURE_SET_COMPUTE";
+    break;
+  default:
+    os << "unknown enumerator";
+    break;
+  }
+  return os;
+}
 ///////////////////////////////////////////////////////////////////////////////
 /// @brief Print operator for the ur_kernel_launch_properties_flag_t type
 /// @returns

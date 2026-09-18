@@ -1220,6 +1220,27 @@ public:
                         "ext_intel_max_lanes_per_hw_thread aspect");
       return get_info_impl<UR_DEVICE_INFO_MAX_LANES_PER_HW_THREAD>();
     }
+    CASE(ext::intel::info::device::igca) {
+      if (!has(aspect::ext_intel_igca))
+        throw exception(make_error_code(errc::feature_not_supported),
+                        "The device does not have the ext_intel_igca aspect");
+      return get_info_impl<UR_DEVICE_INFO_IGCA>();
+    }
+    CASE(ext::intel::info::device::igca_feature_set) {
+      if (!has(aspect::ext_intel_igca))
+        throw exception(make_error_code(errc::feature_not_supported),
+                        "The device does not have the ext_intel_igca aspect");
+
+      switch (get_info_impl<UR_DEVICE_INFO_IGCA_FEATURE_SET>()) {
+      case UR_DEVICE_IGCA_FEATURE_SET_RENDER:
+        return ext::intel::igca_feature::render;
+      case UR_DEVICE_IGCA_FEATURE_SET_COMPUTE:
+        return ext::intel::igca_feature::compute;
+      default:
+        throw exception(make_error_code(errc::runtime),
+                        "Unknown IGCA feature set reported by the device");
+      }
+    }
 
     // khr device traits (defined under sycl/khr/...).
 
@@ -1404,6 +1425,10 @@ public:
     }
     CASE(ext_intel_max_lanes_per_hw_thread) {
       return has_info_desc(UR_DEVICE_INFO_MAX_LANES_PER_HW_THREAD);
+    }
+    CASE(ext_intel_igca) {
+      return has_info_desc(UR_DEVICE_INFO_IGCA) &&
+             has_info_desc(UR_DEVICE_INFO_IGCA_FEATURE_SET);
     }
     CASE(ext_oneapi_srgb) { return get_info<info::device::ext_oneapi_srgb>(); }
     CASE(ext_oneapi_native_assert) {
@@ -2459,7 +2484,7 @@ private:
           aspect::ext_intel_xe_clusters_per_region,
           aspect::ext_intel_xe_cores_per_cluster,
           aspect::ext_intel_eus_per_xe_core,
-          aspect::ext_intel_max_lanes_per_hw_thread>>
+          aspect::ext_intel_max_lanes_per_hw_thread, aspect::ext_intel_igca>>
       MCache;
 
   const size_t MIndexWithinPlatform = 0;

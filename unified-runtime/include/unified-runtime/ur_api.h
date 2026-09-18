@@ -2442,6 +2442,12 @@ typedef enum ur_device_info_t {
   /// [uint32_t][optional-query] return Intel GPU maximal number of lanes
   /// (virtual SIMD size) per hardware thread
   UR_DEVICE_INFO_MAX_LANES_PER_HW_THREAD = 139,
+  /// [uint32_t][optional-query] return Intel GPU numeric IGCA (Intel
+  /// Graphics Compute Architecture), e.g. 20 for PVC
+  UR_DEVICE_INFO_IGCA = 140,
+  /// [::ur_device_igca_feature_set_t][optional-query] return the feature
+  /// set the Intel GPU implements for its IGCA
+  UR_DEVICE_INFO_IGCA_FEATURE_SET = 141,
   /// [::ur_bool_t] Returns true if the device supports the use of
   /// command-buffers.
   UR_DEVICE_INFO_COMMAND_BUFFER_SUPPORT_EXP = 0x1000,
@@ -3168,6 +3174,22 @@ typedef enum ur_device_throttle_reasons_flag_t {
 } ur_device_throttle_reasons_flag_t;
 /// @brief Bit Mask for validating ur_device_throttle_reasons_flags_t
 #define UR_DEVICE_THROTTLE_REASONS_FLAGS_MASK 0xffffff80
+
+///////////////////////////////////////////////////////////////////////////////
+/// @brief IGCA (Intel Graphics Compute Architecture) feature set. A device
+///        implements exactly one of these feature sets.
+typedef enum ur_device_igca_feature_set_t {
+  /// The device implements the render feature set of its IGCA, i.e. it is a
+  /// client GPU.
+  UR_DEVICE_IGCA_FEATURE_SET_RENDER = 0,
+  /// The device implements the compute feature set of its IGCA, i.e. it is
+  /// a datacenter GPU.
+  UR_DEVICE_IGCA_FEATURE_SET_COMPUTE = 1,
+  /// @cond
+  UR_DEVICE_IGCA_FEATURE_SET_FORCE_UINT32 = 0x7fffffff
+  /// @endcond
+
+} ur_device_igca_feature_set_t;
 
 ///////////////////////////////////////////////////////////////////////////////
 /// @brief Kernel launch properties support
