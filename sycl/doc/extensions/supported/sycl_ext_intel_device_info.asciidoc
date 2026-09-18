@@ -77,6 +77,7 @@ supports.
 | 7     | Throttle reasons, fan speed and power limits queries are supported
 | 8     | Device LUID and device node mask is supported
 | 9     | XE device properties are supported
+| 11    | IGCA and IGCA feature set queries are supported
 |===
 
 === PCI Address
@@ -1425,6 +1426,110 @@ the device does not have `aspect::ext_intel_max_lanes_per_hw_thread`.
 ----
 if (dev.has(aspect::ext_intel_max_lanes_per_hw_thread)) {
   auto numMaxLanesPerHWThread = dev.get_info<ext::intel::info::device::max_lanes_per_hw_thread>();
+}
+----
+
+'''
+
+=== Intel GPU IGCA
+
+Missing before version 11 of this extension.
+
+This extension adds the following device aspect and information descriptors,
+which allow an application to query the Intel Graphics Compute Architecture
+(IGCA) supported by an Intel GPU, together with the feature set that the device
+implements for it.
+
+An IGCA is identified by a numeric value (for example, 20 for PVC) and by a
+feature set. The "render" feature set is implemented by client GPUs, while the
+"compute" feature set is implemented by datacenter GPUs. A device implements
+exactly one of these feature sets.
+
+==== New device aspect
+
+[source,c++]
+----
+namespace sycl {
+
+enum class aspect {
+  ext_intel_igca
+  // ...
+};
+
+} // namespace sycl
+----
+
+`ext_intel_igca`: Indicates that the device supports the `igca` and
+`igca_feature_set` information descriptors.
+
+==== IGCA feature sets
+
+[source,c++]
+----
+namespace sycl::ext::intel {
+
+enum class igca_feature {
+  render,
+  compute
+};
+
+} // namespace sycl::ext::intel
+----
+
+[%header,cols="1,5"]
+|===
+| Feature set | Description
+| `render` | The device implements the "r" feature set of its IGCA, i.e. it is a
+client GPU.
+| `compute` | The device implements the "c" feature set of its IGCA, i.e. it is
+a datacenter GPU.
+|===
+
+==== New device information descriptors
+
+[source,c++]
+----
+namespace sycl::ext::intel::info::device {
+struct igca {
+  using return_type = uint32_t;
+};
+} // namespace sycl::ext::intel::info::device
+----
+
+_Remarks:_ Template parameter to `device::get_info`.
+
+_Returns:_ The numeric IGCA supported by the device, e.g. 20 for PVC.
+
+_Throws:_ An `exception` with the `errc::feature_not_supported` error code if
+the device does not have `aspect::ext_intel_igca`.
+
+[source,c++]
+----
+namespace sycl::ext::intel::info::device {
+struct igca_feature_set {
+  using return_type = ext::intel::igca_feature;
+};
+} // namespace sycl::ext::intel::info::device
+----
+
+_Remarks:_ Template parameter to `device::get_info`.
+
+_Returns:_ The feature set that the device implements for the IGCA returned by
+`igca`.
+
+_Throws:_ An `exception` with the `errc::feature_not_supported` error code if
+the device does not have `aspect::ext_intel_igca`.
+
+==== Example Usage
+
+[source,c++]
+----
+if (dev.has(aspect::ext_intel_igca)) {
+  auto IGCA = dev.get_info<ext::intel::info::device::igca>();
+  auto FeatureSet = dev.get_info<ext::intel::info::device::igca_feature_set>();
+
+  bool IsClientGPU = FeatureSet == ext::intel::igca_feature::render;
+  bool IsDatacenterGPU = FeatureSet == ext::intel::igca_feature::compute;
 }
 ----
 
