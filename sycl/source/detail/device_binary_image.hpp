@@ -253,6 +253,10 @@ public:
   }
   const PropertyRange &getMiscProperties() const { return Misc; }
 
+  /// Returns true if this module was built in `--offload-arch` mode, i.e. it
+  /// holds one sub-module per IGCA target.
+  bool isIgcaModule() const { return IgcaMetadata.isAvailable(); }
+
   std::uintptr_t getImageID() const {
     assert(Bin && "Image ID is not available without a binary image.");
     return ImageId;
@@ -291,6 +295,7 @@ protected:
   RTDeviceBinaryImage::PropertyRange WorkGroupDynamicLocalMem;
   RTDeviceBinaryImage::PropertyRange RegisteredKernels;
   RTDeviceBinaryImage::PropertyRange Misc;
+  RTDeviceBinaryImage::PropertyRange IgcaMetadata;
 
   std::vector<ur_program_metadata_t> ProgramMetadataUR;
 

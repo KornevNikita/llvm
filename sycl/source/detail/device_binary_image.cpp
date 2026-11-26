@@ -230,6 +230,7 @@ RTDeviceBinaryImage::RTDeviceBinaryImage(sycl_device_binary Bin) {
   VirtualFunctions.init(Bin, __SYCL_PROPERTY_SET_SYCL_VIRTUAL_FUNCTIONS);
   RegisteredKernels.init(Bin, __SYCL_PROPERTY_SET_SYCL_REGISTERED_KERNELS);
   Misc.init(Bin, __SYCL_PROPERTY_SET_SYCL_MISC_PROP);
+  IgcaMetadata.init(Bin, __SYCL_PROPERTY_SET_SYCL_IGCA_METADATA);
 }
 
 std::atomic<uintptr_t> RTDeviceBinaryImage::ImageCounter = 1;

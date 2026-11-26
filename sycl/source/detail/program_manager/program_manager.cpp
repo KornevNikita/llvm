@@ -1348,6 +1348,13 @@ const RTDeviceBinaryImage *getBinImageFromMultiMap(
   if (DeviceFilteredImgs.empty())
     return nullptr;
 
+  // An image that contains IGCA target sub-modules is used as is, without
+  // ranking it against other images: the backend selects the best sub-module
+  // for the device itself.
+  for (const RTDeviceBinaryImage *Img : DeviceFilteredImgs)
+    if (Img->isIgcaModule())
+      return Img;
+
   const size_t NumImgs = DeviceFilteredImgs.size();
   // Pass extra information to the HIP adapter to aid in binary selection. We
   // pass it the raw binary as a {ptr, length} pair.
@@ -3597,8 +3604,10 @@ bool doesImageTargetMatchDevice(const RTDeviceBinaryImage &Img,
       std::find_if(PropRange.begin(), PropRange.end(), [&](const auto &Prop) {
         return Prop->Name == std::string_view("compile_target");
       });
-  // Device image has no compile_target property, check target.
-  if (PropIt == PropRange.end()) {
+  // Device image has no compile_target property, check target. An
+  // --offload-arch module holds many sub-modules, so no single compile_target
+  // describes it.
+  if (PropIt == PropRange.end() || Img.isIgcaModule()) {
     sycl::backend BE = DevImpl.getBackend();
     const char *Target = Img.getRawData().DeviceTargetSpec;
     // On Offload, the image format depends on the platform. As with the UR CTS,
